@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WAIne - Informação sobre vinhos por imagens com inteligência artificial</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="content-box">
+        <h1>WAIne</h1>
+        <p>Informação sobre vinhos por imagens com inteligência artificial</p>
+        
+        <div class="camera-container">
+            <video id="video" autoplay></video>
+            <canvas id="canvas" style="display: none;"></canvas>
+            <img id="photo" src="" alt="Captured photo" style="display: none;">
+        </div>
+
+        <div class="buttons">
+            <button id="open-camera" class="btn-primary">Câmera do Dispositivo</button>
+            <button id="capture" class="btn-primary" style="display: none;">Capturar Imagem</button>
+            <input id="upload-gallery" type="file" accept="image/*" style="display: none;">
+            <button id="gallery" class="btn-secondary">Carregar da Galeria</button>
+            <button id="clear" class="btn-secondary" style="display: none;">Limpar</button>
+        </div>
+
+        <div class="send-button">
+            <button id="upload" class="btn-secondary" disabled>Enviar para Gemini</button>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

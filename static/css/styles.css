@@ -1,0 +1,100 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #4b0082; /* Fundo em tom de roxo mais escuro */
+}
+
+.content-box {
+    border: 2px solid #800080; /* Borda em tom de roxo mais claro */
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 90%; /* Largura máxima para telas menores */
+    margin: 0 auto; /* Centralizando a caixa */
+    background-color: #9932cc; /* Fundo em tom de roxo mais claro */
+    text-align: center; /* Centraliza o conteúdo horizontalmente */
+}
+
+h1 {
+    color: #333;
+}
+
+p {
+    color: #333;
+}
+
+.camera-container {
+    width: 100%;
+    max-width: 320px; /* Largura máxima para o contêiner da câmera */
+    margin: 20px auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#video, #photo {
+    width: 100%;
+    height: auto;
+    display: none;
+}
+
+.buttons {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap; /* Permite que os botões sejam organizados em várias linhas */
+    justify-content: center; /* Centraliza os botões horizontalmente */
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    border: 2px solid #800080; /* Adicionando contorno aos botões */
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #800080; /* Botões em tom de roxo mais claro */
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #660066; /* Hover em tom de roxo mais escuro */
+}
+
+.btn-secondary {
+    background-color: #9932cc; /* Botões em tom de roxo mais claro */
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #8a2be2; /* Hover em tom de roxo mais escuro */
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.send-button {
+    margin-top: 10px; /* Adiciona um espaçamento acima do botão */
+}
+
+.send-button button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 2px solid #800080; /* Adicionando contorno ao botão */
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #9932cc; /* Cor do botão */
+    color: #fff; /* Cor do texto do botão */
+}
+
+.send-button button:hover {
+    background-color: #8a2be2; /* Hover em tom de roxo mais escuro */
+}
