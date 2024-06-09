@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 import requests
 
+AI_STUDIO_API_KEY = 'AIzaSyD8AfZZkTNsXntJ0zfIUpGLLRQgOf8gZI4'
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -18,7 +20,6 @@ def upload_image():
     data = {'text': text}
     response = requests.post('https://api.aistudio.ai/your_model_endpoint', files=files, headers=headers, data=data)
 
-    
     if response.status_code == 200:
         result = response.json()
         
