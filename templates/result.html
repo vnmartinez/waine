@@ -25,15 +25,16 @@
             max-width: 90%; /* Largura máxima para telas menores */
             margin: 0 auto; /* Centralizando a caixa */
             background-color: #9932cc; /* Fundo em tom de roxo mais claro */
-            text-align: center; /* Centraliza o conteúdo horizontalmente */
+            text-align: left; /* Alinha o conteúdo à esquerda */
         }
 
         h1 {
-            color: #333;
+            color: #fff;
+            text-align: center; /* Centraliza o título */
         }
 
         p {
-            color: #333;
+            color: #fff;
         }
 
         button {
@@ -43,46 +44,76 @@
             border: 2px solid #800080; /* Adicionando contorno aos botões */
             border-radius: 5px;
             cursor: pointer;
-        }
-
-        .btn-primary {
             background-color: #800080; /* Botões em tom de roxo mais claro */
             color: #fff;
         }
 
-        .btn-primary:hover {
+        button:hover {
             background-color: #660066; /* Hover em tom de roxo mais escuro */
-        }
-
-        .btn-secondary {
-            background-color: #9932cc; /* Botões em tom de roxo mais claro */
-            color: #fff;
-        }
-
-        .btn-secondary:hover {
-            background-color: #8a2be2; /* Hover em tom de roxo mais escuro */
         }
 
         button:disabled {
             background-color: #ccc;
             cursor: not-allowed;
         }
+
+        .result-item {
+            margin-bottom: 10px;
+        }
+
+        .result-item span {
+            font-weight: bold;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin: 10px 0;
+            padding-left: 20px;
+            color: #fff;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        .button-container {
+            text-align: center; /* Centraliza o botão */
+            margin-top: 20px; /* Espaço adicional acima do botão */
+        }
     </style>
 </head>
 <body>
     <div class="content-box">
         <h1>Resultado</h1>
-        <p id="resultText">{{ result_text }}</p>
+        <div id="resultContent"></div>
         
-        <!-- Botão para retornar para index.html -->
-        <button id="returnButton" class="btn-primary">Voltar para a Página Inicial</button>
+        <!-- Container para centralizar o botão -->
+        <div class="button-container">
+            <button id="returnButton">Voltar para a Página Inicial</button>
+        </div>
 
         <script>
             const urlParams = new URLSearchParams(window.location.search);
             const resultText = urlParams.get('result_text');
 
-            const resultParagraph = document.getElementById('resultText');
-            resultParagraph.textContent = resultText || 'Nenhum resultado disponível';
+            const resultContent = document.getElementById('resultContent');
+            try {
+                // Remover o backtick e os espaços em branco que não fazem parte do JSON válido
+                const cleanResultText = resultText.replace(/```json|```/g, '').trim();
+                const jsonObject = JSON.parse(cleanResultText);
+                resultContent.innerHTML = `
+                    <div class="result-item"><span>Vinho:</span> ${jsonObject.vinho}</div>
+                    <div class="result-item"><span>Uva:</span> ${jsonObject.uva}</div>
+                    <div class="result-item"><span>Características:</span> ${jsonObject.características}</div>
+                    <div class="result-item"><span>Harmonizações:</span>
+                        <ul>
+                            ${jsonObject.harmonizações.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            } catch (e) {
+                resultContent.textContent = 'Erro ao analisar o JSON. Verifique o formato do texto.';
+            }
 
             const returnButton = document.getElementById('returnButton');
             returnButton.addEventListener('click', () => {

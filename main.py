@@ -22,7 +22,7 @@ def upload_image():
         if image_file.filename == '':
             return jsonify({'error': 'Nenhum arquivo selecionado para upload.'}), 400
 
-        text = " Você deverá responder em Português do Brasil. Esta imagem contem a foto de um rótulo de vinho. Descreva qual vinho é, qual uva, quais as características do vinho e quais as harmonizações possíveis do vinho. Caso a imagem não seja um rótulo de vinho, informe que não pode reconhecer um rótulo de vinho na imagem. Retorne tudo em formato JSON"
+        text = " Você deverá responder em Português do Brasil. Esta imagem contem a foto de um rótulo de vinho. Descreva qual vinho é, qual uva, quais as características do vinho e quais as harmonizações possíveis do vinho. Caso a imagem não seja um rótulo de vinho, informe que não pode reconhecer um rótulo de vinho na imagem. Retorne tudo em formato JSON sempre com as propriedades vinho , uva,características, harmonizações[]"
 
         timestamp = int(time.time())
         unique_id = str(uuid.uuid4())[:8]
