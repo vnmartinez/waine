@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify
 import os
 import time
 import uuid
 import google.generativeai as generativeai
 from PIL import Image
-import requests
+
 
 app = Flask(__name__)
 
@@ -72,4 +72,4 @@ def show_result():
 if __name__ == '__main__':
     if not os.path.exists('uploads'):
         os.makedirs('uploads')
-    app.run( port=os.getenv("PORT", default=5000))
+    app.run(debug=True, port=os.getenv("PORT", default=5000))
