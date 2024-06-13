@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WAIne - Informação sobre vinhos por imagens com inteligência artificial</title>
+    <title>WAIne - Reconhecimento de vinhos por imagem com IA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-mF2zsmP2Lx2o7QJh1Zg6a/g4roRP1m7j/bi1XCh1YUjOy0P1mzV5Vf9AZoTnjUzEPJHBLYfN74i7Y09sbcbThg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <div class="content-box">
+        <i class="fas fa-wine-glass-alt fa-2x" style="position: absolute; top: 10px; left: 10px;"></i>
         <h1>WAIne</h1>
-        <p>Informação sobre vinhos por imagens com inteligência artificial</p>
+        <p>Reconhecimento de vinhos por imagem com IA</p>
         
         <div class="camera-container">
             <video id="video" autoplay></video>
@@ -18,15 +20,13 @@
         </div>
 
         <div class="buttons">
-            <button id="open-camera" class="btn-primary">Câmera do Dispositivo</button>
-            <button id="capture" class="btn-primary" style="display: none;">Capturar Imagem</button>
             <input id="upload-gallery" type="file" accept="image/*" style="display: none;">
-            <button id="gallery" class="btn-secondary">Carregar da Galeria</button>
+            <button id="gallery" class="btn-secondary">Carregar Imagem do Rótulo</button>
             <button id="clear" class="btn-secondary" style="display: none;">Limpar</button>
         </div>
 
         <div class="send-button">
-            <button id="upload" class="btn-secondary" disabled>Enviar para Gemini</button>
+            <button id="upload" class="btn-secondary" disabled>Buscar</button>
         </div>
     </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>

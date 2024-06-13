@@ -10,6 +10,7 @@ body {
 }
 
 .content-box {
+    position: relative; /* Para permitir o posicionamento absoluto do ícone */
     border: 2px solid #800080; /* Borda em tom de roxo mais claro */
     border-radius: 10px;
     padding: 20px;

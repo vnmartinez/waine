@@ -1,50 +1,10 @@
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const captureButton = document.getElementById('capture');
-const openCameraButton = document.getElementById('open-camera');
 const galleryButton = document.getElementById('gallery');
 const uploadButton = document.getElementById('upload');
 const uploadGalleryInput = document.getElementById('upload-gallery');
 const photo = document.getElementById('photo');
 const clearButton = document.getElementById('clear');
 
-let stream = null;
 let imageBlob = null;
-
-openCameraButton.addEventListener('click', () => {
-    if (!stream) {
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(cameraStream => {
-                stream = cameraStream;
-                video.srcObject = stream;
-                video.play();
-                captureButton.style.display = 'inline-block';
-                openCameraButton.disabled = true; // Desabilitar o botão "Câmera do Dispositivo" após a abertura da câmera
-            })
-            .catch(err => {
-                console.error("Erro ao acessar a câmera: ", err);
-            });
-    }
-});
-
-captureButton.addEventListener('click', () => {
-    const context = canvas.getContext('2d');
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    canvas.toBlob(blob => {
-        imageBlob = blob;
-        const url = URL.createObjectURL(blob);
-        photo.src = url;
-        photo.style.display = 'block';
-        clearButton.style.display = 'inline-block';
-        uploadButton.disabled = false;
-        captureButton.style.display = 'none'; // Ocultar o botão "Capturar Imagem" após a captura
-        openCameraButton.disabled = false; // Habilitar o botão "Câmera do Dispositivo" novamente
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop()); // Encerrar o acesso à câmera após a captura da imagem
-            stream = null;
-        }
-    }, 'image/png');
-});
 
 galleryButton.addEventListener('click', () => {
     uploadGalleryInput.click();
@@ -56,6 +16,7 @@ uploadGalleryInput.addEventListener('change', (event) => {
         const url = URL.createObjectURL(file);
         const img = new Image();
         img.onload = () => {
+            const canvas = document.getElementById('canvas');
             const context = canvas.getContext('2d');
             context.drawImage(img, 0, 0, canvas.width, canvas.height);
             canvas.toBlob(blob => {
@@ -74,14 +35,6 @@ clearButton.addEventListener('click', () => {
     photo.style.display = 'none';
     clearButton.style.display = 'none';
     uploadButton.disabled = true;
-    if (captureButton.style.display === 'inline-block') {
-        captureButton.style.display = 'none'; // Ocultar o botão "Capturar Imagem" se estiver visível ao limpar a foto
-    }
-    openCameraButton.disabled = false; // Habilitar o botão "Câmera do Dispositivo" novamente
-    if (stream) {
-        stream.getTracks().forEach(track => track.stop()); // Encerrar o acesso à câmera após limpar a foto
-        stream = null;
-    }
     imageBlob = null;
 });
 
@@ -108,4 +61,3 @@ uploadButton.addEventListener('click', () => {
         console.error("Nenhuma imagem para enviar.");
     }
 });
-
