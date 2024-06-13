@@ -2,26 +2,93 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultado</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"> <!-- Importa o arquivo de estilo -->
+    <style>
+        /* Estilo específico para o resultado */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #4b0082; /* Fundo em tom de roxo mais escuro */
+        }
+
+        .content-box {
+            border: 2px solid #800080; /* Borda em tom de roxo mais claro */
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 90%; /* Largura máxima para telas menores */
+            margin: 0 auto; /* Centralizando a caixa */
+            background-color: #9932cc; /* Fundo em tom de roxo mais claro */
+            text-align: center; /* Centraliza o conteúdo horizontalmente */
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #333;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            border: 2px solid #800080; /* Adicionando contorno aos botões */
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #800080; /* Botões em tom de roxo mais claro */
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #660066; /* Hover em tom de roxo mais escuro */
+        }
+
+        .btn-secondary {
+            background-color: #9932cc; /* Botões em tom de roxo mais claro */
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background-color: #8a2be2; /* Hover em tom de roxo mais escuro */
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
-    <h1>Resultado</h1>
-    <p id="resultText">{{ result_text }}</p>
-    
-    <!-- Botão para retornar para index.html -->
-    <button id="returnButton">Voltar para a Página Inicial</button>
+    <div class="content-box">
+        <h1>Resultado</h1>
+        <p id="resultText">{{ result_text }}</p>
+        
+        <!-- Botão para retornar para index.html -->
+        <button id="returnButton" class="btn-primary">Voltar para a Página Inicial</button>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const resultText = urlParams.get('result_text');
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const resultText = urlParams.get('result_text');
 
-        const resultParagraph = document.getElementById('resultText');
-        resultParagraph.textContent = resultText || 'Nenhum resultado disponível';
+            const resultParagraph = document.getElementById('resultText');
+            resultParagraph.textContent = resultText || 'Nenhum resultado disponível';
 
-        const returnButton = document.getElementById('returnButton');
-        returnButton.addEventListener('click', () => {
-            window.location.href = '/'; 
-        });
-    </script>
+            const returnButton = document.getElementById('returnButton');
+            returnButton.addEventListener('click', () => {
+                window.location.href = '/'; 
+            });
+        </script>
+    </div>
 </body>
 </html>
