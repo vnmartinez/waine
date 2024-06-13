@@ -70,6 +70,6 @@ def show_result():
     return render_template('result.html', result_text=result_text)
 
 if __name__ == '__main__':
-    if not os.path.exists('uploads'):
-        os.makedirs('uploads')
+    # if not os.path.exists('uploads'):
+    #     os.makedirs('uploads')
     app.run(debug=True, port=os.getenv("PORT", default=5000))
