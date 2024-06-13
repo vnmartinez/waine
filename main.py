@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify
 import os
 import time
 import uuid
@@ -12,11 +12,6 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
-
 @app.route('/upload', methods=['POST'])
 def upload_image():
     try:
@@ -28,9 +23,6 @@ def upload_image():
             return jsonify({'error': 'Nenhum arquivo selecionado para upload.'}), 400
 
         text = " Você deverá responder em Português do Brasil. Esta imagem contem a foto de um rótulo de vinho. Descreva qual vinho é, qual uva, quais as características do vinho e quais as harmonizações possíveis do vinho. Caso a imagem não seja um rótulo de vinho, informe que não pode reconhecer um rótulo de vinho na imagem. Retorne tudo em formato JSON"
-
-        if not os.path.exists('uploads'):
-            os.makedirs('uploads')
 
         timestamp = int(time.time())
         unique_id = str(uuid.uuid4())[:8]
@@ -78,4 +70,6 @@ def show_result():
     return render_template('result.html', result_text=result_text)
 
 if __name__ == '__main__':
-    app.run()
+    if not os.path.exists('uploads'):
+        os.makedirs('uploads')
+    app.run(debug=True, port=os.getenv("PORT", default=5000))
