@@ -7,12 +7,14 @@ const clearButton = document.getElementById('clear');
 let imageBlob = null;
 
 galleryButton.addEventListener('click', () => {
+    console.log('Gallery button clicked');
     uploadGalleryInput.click();
 });
 
 uploadGalleryInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
     if (file) {
+        console.log('File selected:', file.name);
         const url = URL.createObjectURL(file);
         const img = new Image();
         img.onload = () => {
@@ -25,6 +27,7 @@ uploadGalleryInput.addEventListener('change', (event) => {
                 photo.style.display = 'block';
                 clearButton.style.display = 'inline-block';
                 uploadButton.disabled = false;
+                console.log('Image loaded and displayed');
             }, 'image/png');
         };
         img.src = url;
@@ -32,6 +35,7 @@ uploadGalleryInput.addEventListener('change', (event) => {
 });
 
 clearButton.addEventListener('click', () => {
+    console.log('Clear button clicked');
     photo.style.display = 'none';
     clearButton.style.display = 'none';
     uploadButton.disabled = true;
@@ -40,6 +44,7 @@ clearButton.addEventListener('click', () => {
 
 uploadButton.addEventListener('click', () => {
     if (imageBlob) {
+        console.log('Upload button clicked, starting upload');
         const formData = new FormData();
         formData.append('image', imageBlob, 'captured_image.png');
         
@@ -48,6 +53,7 @@ uploadButton.addEventListener('click', () => {
             body: formData
         }).then(response => response.json())
           .then(data => {
+              console.log('Server response:', data);
               if (data && data.result_text) {
                   const resultText = data.result_text;
                   window.location.href = `/result?result_text=${encodeURIComponent(resultText)}`;
