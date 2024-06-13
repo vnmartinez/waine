@@ -9,6 +9,7 @@ const photo = document.getElementById('photo');
 const clearButton = document.getElementById('clear');
 
 let stream = null;
+let imageBlob = null;
 
 openCameraButton.addEventListener('click', () => {
     if (!stream) {
@@ -29,17 +30,20 @@ openCameraButton.addEventListener('click', () => {
 captureButton.addEventListener('click', () => {
     const context = canvas.getContext('2d');
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const dataURL = canvas.toDataURL('image/png');
-    photo.src = dataURL;
-    photo.style.display = 'block';
-    clearButton.style.display = 'inline-block';
-    uploadButton.disabled = false;
-    captureButton.style.display = 'none'; // Ocultar o botão "Capturar Imagem" após a captura
-    openCameraButton.disabled = false; // Habilitar o botão "Câmera do Dispositivo" novamente
-    if (stream) {
-        stream.getTracks().forEach(track => track.stop()); // Encerrar o acesso à câmera após a captura da imagem
-        stream = null;
-    }
+    canvas.toBlob(blob => {
+        imageBlob = blob;
+        const url = URL.createObjectURL(blob);
+        photo.src = url;
+        photo.style.display = 'block';
+        clearButton.style.display = 'inline-block';
+        uploadButton.disabled = false;
+        captureButton.style.display = 'none'; // Ocultar o botão "Capturar Imagem" após a captura
+        openCameraButton.disabled = false; // Habilitar o botão "Câmera do Dispositivo" novamente
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop()); // Encerrar o acesso à câmera após a captura da imagem
+            stream = null;
+        }
+    }, 'image/png');
 });
 
 galleryButton.addEventListener('click', () => {
@@ -49,21 +53,20 @@ galleryButton.addEventListener('click', () => {
 uploadGalleryInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                const context = canvas.getContext('2d');
-                context.drawImage(img, 0, 0, canvas.width, canvas.height);
-                const dataURL = canvas.toDataURL('image/png');
-                photo.src = dataURL;
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+            const context = canvas.getContext('2d');
+            context.drawImage(img, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(blob => {
+                imageBlob = blob;
+                photo.src = url;
                 photo.style.display = 'block';
                 clearButton.style.display = 'inline-block';
                 uploadButton.disabled = false;
-            };
-            img.src = e.target.result;
+            }, 'image/png');
         };
-        reader.readAsDataURL(file);
+        img.src = url;
     }
 });
 
@@ -79,24 +82,30 @@ clearButton.addEventListener('click', () => {
         stream.getTracks().forEach(track => track.stop()); // Encerrar o acesso à câmera após limpar a foto
         stream = null;
     }
+    imageBlob = null;
 });
 
 uploadButton.addEventListener('click', () => {
-    const dataURL = canvas.toDataURL('image/png');
-
-    fetch('/upload', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({
-            'image': dataURL,
-            'text': 'Texto fixo aqui' // Texto fixo
-        })
-    }).then(response => response.json())
-      .then(data => {
-          console.log(data);
-      }).catch(error => {
-          console.error("Erro ao enviar a imagem: ", error);
-      });
+    if (imageBlob) {
+        const formData = new FormData();
+        formData.append('image', imageBlob, 'captured_image.png');
+        
+        fetch('/upload', {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json())
+          .then(data => {
+              if (data && data.result_text) {
+                  const resultText = data.result_text;
+                  window.location.href = `/result?result_text=${encodeURIComponent(resultText)}`;
+              } else {
+                  throw new Error('Resposta inválida do servidor');
+              }
+          }).catch(error => {
+              console.error("Erro ao enviar a imagem: ", error);
+          });
+    } else {
+        console.error("Nenhuma imagem para enviar.");
+    }
 });
+

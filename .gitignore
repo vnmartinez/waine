@@ -18,3 +18,5 @@ __pycache__/
 # Dependency directories
 myenv/
 env/
+
+*.pdf

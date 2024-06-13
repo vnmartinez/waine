@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
+import os
+import time
+import uuid
+import google.generativeai as generativeai
+from PIL import Image
 import requests
-
-AI_STUDIO_API_KEY = 'AIzaSyD8AfZZkTNsXntJ0zfIUpGLLRQgOf8gZI4'
 
 app = Flask(__name__)
 
@@ -11,21 +14,62 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_image():
-    image_data = request.files['image']
-    text = 'Seu texto fixo aqui'  
-
-    
-    files = {'image': image_data.read()}
-    headers = {'x-api-key': AI_STUDIO_API_KEY, 'Content-Type': 'application/json'}
-    data = {'text': text}
-    response = requests.post('https://api.aistudio.ai/your_model_endpoint', files=files, headers=headers, data=data)
-
-    if response.status_code == 200:
-        result = response.json()
+    try:
+        if 'image' not in request.files:
+            return jsonify({'error': 'Nenhuma imagem foi enviada.'}), 400
         
-        return jsonify(result)
-    else:
-        return 'Erro ao enviar imagem para o AI Studio', 500
+        image_file = request.files['image']
+        if image_file.filename == '':
+            return jsonify({'error': 'Nenhum arquivo selecionado para upload.'}), 400
+
+        text = " Esta imagem contem a foto de um rótulo de vinho. Dada a imagem, descreva qual vinho é, qual uva, quais as características do vinho e quais as harmonizações possíveis do vinho. Caso a imagem não seja um rótulo de vinho, informe que não pode reconhecer um rótulo de vinho na imagem. Retorne tudo em formato JSON"
+
+        timestamp = int(time.time())
+        unique_id = str(uuid.uuid4())[:8]
+        image_filename = f'captured_image_{timestamp}_{unique_id}.png'
+        image_path = os.path.join('uploads', image_filename)
+
+        image_file.save(image_path)
+
+        image = Image.open(image_path)
+
+        GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+        if not GOOGLE_API_KEY:
+            return jsonify({'error': 'A chave da API do Google não foi configurada.'}), 500
+
+        generativeai.configure(api_key=GOOGLE_API_KEY)
+        model = generativeai.GenerativeModel('gemini-1.5-flash')
+
+        response = model.generate_content([text, image])
+
+        if not response:
+            return jsonify({'error': 'Erro ao chamar a API.'}), 500
+        else:
+            response_text = response.text
+            if os.path.exists(image_path):
+                try:
+                    os.remove(image_path)
+                except Exception as e:
+                    print(f'Erro ao remover {image_path}: {str(e)}')
+                finally:
+                    return jsonify({'result_text': response_text})
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+    finally:
+        if os.path.exists(image_path):
+            try:
+                os.remove(image_path)
+            except Exception as e:
+                print(f'Erro ao remover {image_path}: {str(e)}')
+
+@app.route('/result')
+def show_result():
+    result_text = request.args.get('result', '')
+    return render_template('result.html', result_text=result_text)
 
 if __name__ == '__main__':
+    if not os.path.exists('uploads'):
+        os.makedirs('uploads')
     app.run(debug=True)
